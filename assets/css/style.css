@@ -1,0 +1,21 @@
+body {
+	background: url("../images/geometry2.png");
+}
+* {
+	box-sizing: border-box;
+}
+div {
+	outline-color: orange;
+	border: 2px dotted red;
+	
+}
+.container{
+	text-align: center;
+}
+#start{
+	margin-top: 25%;
+	padding:16px 32px;
+	font-size:16px;
+  	font-weight:100;
+
+}
