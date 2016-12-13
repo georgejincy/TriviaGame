@@ -10,11 +10,11 @@ var myWatch;
 
 //Game question object array
 var triviaQuesArray = [
-						{ques: "Question1", opt1: "Q1Option1", opt2: "Q1Option2", opt3: "Q1Option3", opt4: "Q1Option4", corrAns: 3},
-						{ques: "Question2", opt1: "Q2Option1", opt2: "Q2Option2", opt3: "Q2Option3", opt4: "Q2Option4", corrAns: 1},
-						{ques: "Question3", opt1: "Q3Option1", opt2: "Q3Option2", opt3: "Q3Option3", opt4: "Q3Option4", corrAns: 2},
-						{ques: "Question4", opt1: "Q4Option1", opt2: "Q4Option2", opt3: "Q4Option3", opt4: "Q4Option4", corrAns: 3},
-						{ques: "Question5", opt1: "Q5Option1", opt2: "Q5Option2", opt3: "Q5Option3", opt4: "Q5Option4", corrAns: 1}
+						{ques: "Question1", opt1: "Q1Option1", opt2: "Q1Option2", opt3: "Q1Option3", opt4: "Q1Option4", corrAns: "Q1Option3"},
+						{ques: "Question2", opt1: "Q2Option1", opt2: "Q2Option2", opt3: "Q2Option3", opt4: "Q2Option4", corrAns: "Q2Option1"},
+						{ques: "Question3", opt1: "Q3Option1", opt2: "Q3Option2", opt3: "Q3Option3", opt4: "Q3Option4", corrAns: "Q3Option2"},
+						{ques: "Question4", opt1: "Q4Option1", opt2: "Q4Option2", opt3: "Q4Option3", opt4: "Q4Option4", corrAns: "Q4Option3"},
+						{ques: "Question5", opt1: "Q5Option1", opt2: "Q5Option2", opt3: "Q5Option3", opt4: "Q5Option4", corrAns: "Q5Option1"}
 ];
 
 // stopwatch object
@@ -54,17 +54,20 @@ var stopwatch = {
 
     stopwatch.time = 30;
 
+    console.log("Reset timer");
+
     $("#timer-div").html(stopwatch.time);
 
   },
 
   start: function() {
-
+  	console.log("Start timer")
     //  Use setInterval to start the count here.
     myWatch = setInterval(stopwatch.count, 1000);
 
   },
   stop: function() {
+  	console.log("Stopped the timer");
 
     //  Use clearInterval to stop the count here.
     clearInterval(myWatch);
@@ -146,11 +149,20 @@ function startGame(){
 	//reset variables
 	incorrectAnsCnt = 0;
 	corrAnsCnt = 0;
+	var indx = 0;
 
 	//for(i=0, j=triviaQuesArray.length; i<j ; i++){
 
 		//start timer and display first question
-		newQuestion(0);
+		newQuestion(indx);
+
+			//if Time is up, display correct answer and move to next question
+	if(stopwatch.time <= 0){
+		$("#msg-div").html("Out of Time!. The correct answer is " + triviaQuesArray[indx].corrAns);
+
+		//move to next question
+		newQuestion(indx + 1);
+	}
 
 	//}
 
@@ -178,53 +190,31 @@ $("#options-div").on("click","button", function(){
 
 	//display correct/wrong answer to user
 	var index = $(this).data("ind");
-	var ansIndx = triviaQuesArray[index].corrAns;
-	console.log("correct answer index " + ansIndx);
-	
-	if (ansIndx === 1){
+	console.log("correct answer " + triviaQuesArray[index].corrAns);
 
-		if(triviaQuesArray[index].opt1 === $(this).val() ){
-			$("#msg-div").html("Correct Answer");
-		}else{
-			$("#msg-div").html("Wrong Answer. The correct answer is " + triviaQuesArray[index].opt1);
-		}
-
+	if(triviaQuesArray[index].corrAns === $(this).val() ){
+		$("#msg-div").html("Correct Answer");
+		corrAnsCnt++;
+	}else{
+		$("#msg-div").html("Wrong Answer. The correct answer is " + triviaQuesArray[index].corrAns);
+		incorrectAnsCnt++;
 	}
-	else if (ansIndx === 2){
-
-		if(triviaQuesArray[index].opt2 === $(this).val() ){
-			$("#msg-div").html("Correct Answer");
-		}else{
-			$("#msg-div").html("Wrong Answer. The correct answer is " + triviaQuesArray[index].opt2);
-		}
-
-	}
-	else if (ansIndx === 3){
-
-		if(triviaQuesArray[index].opt3 === $(this).val() ){
-			$("#msg-div").html("Correct Answer");
-		}else{
-			$("#msg-div").html("Wrong Answer. The correct answer is " + triviaQuesArray[index].opt3);
-		}
-
-	}
-	else if (ansIndx === 4){
-
-		if(triviaQuesArray[index].opt4 === $(this).val() ){
-			$("#msg-div").html("Correct Answer");
-		}else{
-			$("#msg-div").html("Wrong Answer. The correct answer is " + triviaQuesArray[index].opt4);
-		}
-
-	}
-
-	
-
-	
 
 	//stop the timer
+	stopwatch.stop();
+	stopwatch.reset();
+
+	//clear the "question-div" and "options-div"
+	$("#question-div").html("");
+	$("#options-div").html("");
 
 	//wait for a few seconds and display next question
+	console.log(triviaQuesArray.length);
+	if ((index+1) < triviaQuesArray.length){
+		setTimeout(newQuestion(index + 1), 5000);
+	}
+
+
 
 	if ($(this).hasClass("options")) {
 			console.log("Option button selected!");
