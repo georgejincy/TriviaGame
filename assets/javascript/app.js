@@ -11,44 +11,46 @@ var TriviaGame = {
 	myTimer: "",
 	timeCnt: 31,
 
-	msgArray: [
-				"'Yep! The correct answer is '' + this.triviaQuesArray[this.currQues].ans",
-				"'Nope! The correct answer is ' + this.triviaQuesArray[this.currQues].ans",
-				"'Sorry, Time is Up! The correct answer is ' + this.triviaQuesArray[this.currQues].ans",
-				"'All done! Here's how you did: <br/>Correct Answers' + this.corrAnsCnt + '<br/>Incorrect Answers: ' + this.inCorrAnsCnt + '<br/> Unanswered: ' + this.missed"
+	imgArray: [
+				"<img class = 'image' src='assets/images/mickey.gif' alt='animated mickey pic'>",
+				"<img class = 'image' src='assets/images/martian.gif' alt='animated martian pic'>",
+				"<img class = 'image' src='assets/images/elmer.gif' alt='animated elmer pic'>",
+				"<img class = 'image' src='assets/images/devil.gif' alt='animated tasmanian devil pic'>",
+				"<img class = 'image' src='assets/images/sylvester.gif' alt='animated sylvester the cat pic'>"
 				],
 
 	triviaQuesArray: [
-						{ ques: "Question1",
-						  options: ["Q1Option1", 
-						 			"Q1Option2", 
-						 			"Q1Option3", 
-						 			"Q1Option4"], 
-						  ans: "Q1Option3"},
-						{ ques: "Question2",
-						  options: ["Q2Option1", 
-						 			"Q2Option2", 
-						 			"Q2Option3", 
-						 			"Q2Option4"], 
-						  ans: "Q2Option4"},
-						{ ques: "Question3",
-						  options: ["Q3Option1", 
-						 			"Q3Option2", 
-						 			"Q3Option3", 
-						 			"Q3Option4"], 
-						  ans: "Q3Option1"},
-						{ ques: "Question4",
-						  options: ["Q4Option1", 
-						 			"Q4Option2", 
-						 			"Q4Option3", 
-						 			"Q4Option4"], 
-						  ans: "Q4Option2"},
-						{ ques: "Question5",
-						  options: ["Q5Option1", 
-						 			"Q5Option2", 
-						 			"Q5Option3", 
-						 			"Q5Option4"], 
-						  ans: "Q5Option3"},
+						{ ques: "Which was the first cartoon to get a star on the Hollywood walk of fame?",
+						  options: ["Mickey Mouse", 
+						 			"Bugs Bunny", 
+						 			"Sylvester the Cat", 
+						 			"Porky Pig"], 
+						  ans: "Mickey Mouse"},
+						{ ques: "Since debuting in 1948, Marvin the Martian has had one goal: to blow up Earth. What’s his motivation?",
+						  options: [
+						  	"Earth obstructs his view of Venus, his favorite planet.", 
+						 	"Destruction is simply in his DNA. He is, after all, based on Mars, the Roman god of war.", 
+						 	"His love interest passed him over for an Earthling and he wants revenge."
+						 		], 
+						  ans: "Earth obstructs his view of Venus, his favorite planet."},
+						{ ques: "Mel Blanc, whose nickname was 'The Man of 1,000 Voices,' provided voices for 90 percent of Looney Tunes characters. Who did he not originally voice?",
+						  options: ["Daffy Duck", 
+						 			"Cecil Turtle", 
+						 			"Elmer Fudd", 
+						 			"Yosemite Sam"], 
+						  ans: "Elmer Fudd"},
+						{ ques: "Who was the last Looney Tunes character introduced before Warner Bros. Cartoons shut down in 1964?",
+						  options: ["Foghorn Leghorn", 
+						 			"Tasmanian Devil", 
+						 			"Michigan J. Frog", 
+						 			"Granny"], 
+						  ans: "Tasmanian Devil"},
+						{ ques: "Which two characters are rivals?",
+						  options: ["Petunia Pig and Porky Pig", 
+						 			"Miss Pris.sy and Egghead Jr.", 
+						 			"Granny and Sylvester the Cat", 
+						 			"Pepe Le Pew and Penelope Pussycat"], 
+						  ans: "Granny and Sylvester the Cat"},
 						],
 
 	displayMsg(msg){
@@ -61,6 +63,7 @@ var TriviaGame = {
 		clearInterval(this.myTimer);
 
 		$("#msg-div").html(msg);
+		$("#media-div").html(this.imgArray[this.currQues]);
 	},
 
 	doTimeOut: function(){
@@ -90,7 +93,7 @@ var TriviaGame = {
 			this.displayQues(this.currQues);
 		}
 		else { //END OF GAME
-			msg = "All done! Here's how you did: <br/>Correct Answers" + this.corrAnsCnt + "<br/>Incorrect Answers: " + this.inCorrAnsCnt + "<br/> Unanswered: " + this.missed + "<br/><button class = 'start'>Start Over</button>";
+			msg = "All done! Here's how you did <br/><br/>Correct Answers: " + this.corrAnsCnt + "<br/>Incorrect Answers: " + this.inCorrAnsCnt + "<br/> Unanswered: " + this.missed + "<br/><button class = 'start'>Start Over</button>";
 			this.displayMsg(msg);
 		}
 
@@ -122,6 +125,7 @@ var TriviaGame = {
 	displayQues: function(num){
 
 		$("#msg-div").html("");
+		$("#media-div").html("");
 		$("#timer-div").html("");
 
 		//Display Question
