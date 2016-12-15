@@ -1,184 +1,212 @@
-// GLOBAL VARIABLES (Accessible by all functions)
-// ==================================================================================================
-var incorrectAnsCnt = 0;
-var corrAnsCnt = 0;
-var myWatch;
-
 
 //OBJECT
 //===================================================================================================
+var TriviaGame = {
 
-//Game question object array
-var triviaQuesArray = [
-						{ques: "Question1", opt1: "Q1Option1", opt2: "Q1Option2", opt3: "Q1Option3", opt4: "Q1Option4", corrAns: "Q1Option3"},
-						{ques: "Question2", opt1: "Q2Option1", opt2: "Q2Option2", opt3: "Q2Option3", opt4: "Q2Option4", corrAns: "Q2Option1"},
-						{ques: "Question3", opt1: "Q3Option1", opt2: "Q3Option2", opt3: "Q3Option3", opt4: "Q3Option4", corrAns: "Q3Option2"},
-						{ques: "Question4", opt1: "Q4Option1", opt2: "Q4Option2", opt3: "Q4Option3", opt4: "Q4Option4", corrAns: "Q4Option3"},
-						{ques: "Question5", opt1: "Q5Option1", opt2: "Q5Option2", opt3: "Q5Option3", opt4: "Q5Option4", corrAns: "Q5Option1"}
-];
+	inCorrAnsCnt: 0,
+	corrAnsCnt: 0,
+	missed: 0,
+	currQues: 0,
+	time: 0,
+	myTimer: "",
+	timeCnt: 31,
 
-// stopwatch object
-/*var stopwatch = {
+	msgArray: [
+				"'Yep! The correct answer is '' + this.triviaQuesArray[this.currQues].ans",
+				"'Nope! The correct answer is ' + this.triviaQuesArray[this.currQues].ans",
+				"'Sorry, Time is Up! The correct answer is ' + this.triviaQuesArray[this.currQues].ans",
+				"'All done! Here's how you did: <br/>Correct Answers' + this.corrAnsCnt + '<br/>Incorrect Answers: ' + this.inCorrAnsCnt + '<br/> Unanswered: ' + this.missed"
+				],
 
-	time: 30,
+	triviaQuesArray: [
+						{ ques: "Question1",
+						  options: ["Q1Option1", 
+						 			"Q1Option2", 
+						 			"Q1Option3", 
+						 			"Q1Option4"], 
+						  ans: "Q1Option3"},
+						{ ques: "Question2",
+						  options: ["Q2Option1", 
+						 			"Q2Option2", 
+						 			"Q2Option3", 
+						 			"Q2Option4"], 
+						  ans: "Q2Option4"},
+						{ ques: "Question3",
+						  options: ["Q3Option1", 
+						 			"Q3Option2", 
+						 			"Q3Option3", 
+						 			"Q3Option4"], 
+						  ans: "Q3Option1"},
+						{ ques: "Question4",
+						  options: ["Q4Option1", 
+						 			"Q4Option2", 
+						 			"Q4Option3", 
+						 			"Q4Option4"], 
+						  ans: "Q4Option2"},
+						{ ques: "Question5",
+						  options: ["Q5Option1", 
+						 			"Q5Option2", 
+						 			"Q5Option3", 
+						 			"Q5Option4"], 
+						  ans: "Q5Option3"},
+						],
 
-	reset: function(){
-		stopwatch.time = 30;
+	displayMsg(msg){
+
+		//clear the question and options div
+		$("#question-div").html("");
+		$("#options-div").html("");
+
+		//stop the timer
+		clearInterval(this.myTimer);
+
+		$("#msg-div").html(msg);
 	},
 
-	start: function(){
-		myWatch = setInterval(stopwatch.count, 1000);
-	},
-	stop: function(){
-		clearInterval(myWatch);
-	},
-	count: function(){
-		console.log(stopwatch.time);
-		stopwatch.time--;
-		$("#timer-div").html(stopwatch.time);
+	doTimeOut: function(){
+		//increment missed count
+		this.missed++;
+		var msg = "Sorry, Time is Up! The correct answer is " + this.triviaQuesArray[this.currQues].ans;
+		this.displayMsg(msg);
 
-		
-		if (stopwatch.time === 0){
-			alert("Time is up!");
-			stopwatch.reset();
+		//display next question
+		setTimeout(function(){TriviaGame.nextQuestion()}, 1000 * 5);
+	},
+
+	incGameTimerCnt: function(){
+		if(TriviaGame.timeCnt > 0){
+			TriviaGame.timeCnt--;
+		}else{
+			TriviaGame.doTimeOut();
+		}
+		//display the timer
+		$("#timer-div").html("Time remaining is " + TriviaGame.timeCnt);
+	},
+
+	nextQuestion: function(){
+
+		if (this.currQues + 1 < this.triviaQuesArray.length){
+			this.currQues++;
+			this.displayQues(this.currQues);
+		}
+		else { //END OF GAME
+			msg = "All done! Here's how you did: <br/>Correct Answers" + this.corrAnsCnt + "<br/>Incorrect Answers: " + this.inCorrAnsCnt + "<br/> Unanswered: " + this.missed + "<br/><button class = 'start'>Start Over</button>";
+			this.displayMsg(msg);
 		}
 
+	},
+
+	validateOption: function(selOption){
+
+		var msg;
+
+		if(selOption === this.triviaQuesArray[this.currQues].ans){
+			this.corrAnsCnt++;
+			msg = "Yep! The correct answer is " + this.triviaQuesArray[this.currQues].ans; 
+			//correct answer
+			this.displayMsg(msg);
+		}
+		else if(selOption !== this.triviaQuesArray[this.currQues].ans){
+			this.inCorrAnsCnt++;
+			msg =  "Nope! The correct answer is "+ this.triviaQuesArray[this.currQues].ans;
+
+			//wrong answer
+			this.displayMsg(msg);
+		}
+
+		//display the next question, if not end of game
+		setTimeout(function(){TriviaGame.nextQuestion()}, 1000 * 5);
+	
+	},
+
+	displayQues: function(num){
+
+		$("#msg-div").html("");
+		$("#timer-div").html("");
+
+		//Display Question
+		$("#question-div").html("<p>" + this.triviaQuesArray[num].ques + "</p>");
+
+		//Display options for the question
+
+		var opt = this.triviaQuesArray[num].options;
+
+		for(k=0; k<opt.length; k++){
+			var optButton = $("<button/>", {	
+			'text': opt[k],
+			'class': '.options',
+			'data-ind': num,
+			'value' : opt[k]
+			});
+
+			var brk = $("<br/>");
+
+			//display options button on screem
+			optButton.appendTo("#options-div");
+			brk.appendTo("#options-div");
+
+			}
+
+		//start the timer
+		this.timeCnt = 31;
+		this.myTimer = setInterval(this.incGameTimerCnt, 1000);
+
+		//display the timer
+		/*$("#timer-div").html("Time remaining is " + this.timeCnt);*/
+			
+	},
+
+	startGame: function(){
+
+		this.inCorrAnsCnt = 0;
+		this.corrAnsCnt = 0;
+		this.missed = 0;
+		this.currQues = 0;
+		this.timeCnt = 31;
+
+
+		//displayQues function passing 0
+		this.displayQues(0);
+
+	},
+
+	displayQuesArray: function(){
+
+		for(i=0, j=this.triviaQuesArray.length; i<j ; i++){
+
+			console.log(this.triviaQuesArray[i]);
+			var quest = this.triviaQuesArray[i].ques;
+			var opt = this.triviaQuesArray[i].options;
+
+			for(k=0; k<opt.length; k++){
+				console.log(opt[k]);
+			}
+
+		}
 	}
-
-};*/
-var stopwatch = {
-
-  time: 31,
-
-  reset: function() {
-
-    stopwatch.time = 30;
-
-    console.log("Reset timer");
-
-    $("#timer-div").html(stopwatch.time);
-
-  },
-
-  start: function() {
-  	console.log("Start timer")
-    //  Use setInterval to start the count here.
-    myWatch = setInterval(stopwatch.count, 1000);
-
-  },
-  stop: function() {
-  	console.log("Stopped the timer");
-
-    //  Use clearInterval to stop the count here.
-    clearInterval(myWatch);
-
-  },
-
-  count: function() {
-
-  	if (stopwatch.time > 0){
-
-	    stopwatch.time--;
-
-	    console.log(stopwatch.time);
-	}
-	else{
-		stopwatch.reset();
-	}
-
-    $("#timer-div").html(stopwatch.time);
-
-  }
 
 };
-
 
 // FUNCTIONS (These are bits of code that we will call upon to run when needed)
 // ==================================================================================================
 
-//Testing/debugging
-$.each(triviaQuesArray, function() {
-	$.each(this, function(key,value) {
-
-		console.log(key + ":" + value);
-	});
-});
-
-function displayQuestion(num){
-	$("#question-div").html("<p>" + triviaQuesArray[num].ques + "</p>");
-	var opt1Button = $("<button><p>" + triviaQuesArray[num].opt1 + "</p></button>"); 
-	//$(".img").attr("alt", " image");
-	opt1Button.addClass("." + "options");
-	opt1Button.data("ind", num);
-	opt1Button.val(triviaQuesArray[num].opt1);
-	var opt2Button = $("<button><p>" + triviaQuesArray[num].opt2 + "</p></button>"); 
-	//$(".img").attr("alt", " image");
-	opt2Button.addClass("." + "options");
-	opt2Button.data("ind", num);
-	opt2Button.val(triviaQuesArray[num].opt2);
-	var opt3Button = $("<button><p>" + triviaQuesArray[num].opt3 + "</p></button>"); 
-	//$(".img").attr("alt", " image");
-	opt3Button.addClass("." + "options");
-	opt3Button.data("ind", num);
-	opt3Button.val(triviaQuesArray[num].opt3);
-	var opt4Button = $("<button><p>" + triviaQuesArray[num].opt4 + "</p></button>"); 
-	//$(".img").attr("alt", " image");
-	opt4Button.addClass("." + "options");
-	opt4Button.data("ind", num);
-	opt4Button.val(triviaQuesArray[num].opt4);
-
-	//append button to options-div
-	opt1Button.appendTo("#options-div");
-	opt2Button.appendTo("#options-div");
-	opt3Button.appendTo("#options-div");
-	opt4Button.appendTo("#options-div");
-}
-
-function newQuestion(num){
-
-	//start timer
-		stopwatch.start();
-
-		//display first question
-		displayQuestion(num);
-
-}
-
-function startGame(){
-
-	//reset variables
-	incorrectAnsCnt = 0;
-	corrAnsCnt = 0;
-	var indx = 0;
-
-	//for(i=0, j=triviaQuesArray.length; i<j ; i++){
-
-		//start timer and display first question
-		newQuestion(indx);
-
-			//if Time is up, display correct answer and move to next question
-	if(stopwatch.time <= 0){
-		$("#msg-div").html("Out of Time!. The correct answer is " + triviaQuesArray[indx].corrAns);
-
-		//move to next question
-		newQuestion(indx + 1);
-	}
-
-	//}
-
-}
 
 
 // MAIN PROCESS (THIS IS THE CODE THAT CONTROLS WHAT IS ACTUALLY RUN)
 // ==================================================================================================
-$("button").on("click", function(){
+TriviaGame.displayQuesArray();
+
+$(document).on("click",".start", function(){
 
 	console.log("Button clicked");
 
 	if ($(this).hasClass("start")) {
 		console.log("Start button clicked!");
 		$("#start").hide();
-		startGame();
+		
+		//display first question
+		TriviaGame.startGame();
+
 	}
 });
 
@@ -187,38 +215,10 @@ $("#options-div").on("click","button", function(){
 	console.log("Option Button clicked");
 	console.log("Value of option is" + $(this).val());
 	console.log("Index of ques array is" + $(this).data("ind"));
+	var selOption = $(this).val();
+	var quesIndx = $(this).data("ind");
 
-	//display correct/wrong answer to user
-	var index = $(this).data("ind");
-	console.log("correct answer " + triviaQuesArray[index].corrAns);
+	//validate selected option
+	TriviaGame.validateOption(selOption);
 
-	if(triviaQuesArray[index].corrAns === $(this).val() ){
-		$("#msg-div").html("Correct Answer");
-		corrAnsCnt++;
-	}else{
-		$("#msg-div").html("Wrong Answer. The correct answer is " + triviaQuesArray[index].corrAns);
-		incorrectAnsCnt++;
-	}
-
-	//stop the timer
-	stopwatch.stop();
-	stopwatch.reset();
-
-	//clear the "question-div" and "options-div"
-	$("#question-div").html("");
-	$("#options-div").html("");
-
-	//wait for a few seconds and display next question
-	console.log(triviaQuesArray.length);
-	if ((index+1) < triviaQuesArray.length){
-		setTimeout(newQuestion(index + 1), 5000);
-	}
-
-
-
-	if ($(this).hasClass("options")) {
-			console.log("Option button selected!");
-			
-	}
-
-});	
+});
