@@ -17,7 +17,7 @@ html {
 	box-sizing: border-box;
 }
 h1{
-	font-size: 36px;
+	font-size: 38px;
 	color: white;
 	font-family: 'Courgette', cursive;
 	padding: 10px;
@@ -30,12 +30,7 @@ div {
 	margin-bottom: 10px;
 	
 }
-.options{
-	background:none;
-    border:none;
-    margin:0;
-    padding:0;
-}
+
 .image{
 	height: 300px;
 	width: auto;
@@ -58,4 +53,21 @@ div {
 	font-size:16px;
   	font-weight:100;
 
+}
+.options{
+	background:none;
+    border-style:none;
+    color: white;
+    font-size: 20px;
+    margin:0;
+    padding:0;
+}
+button.options:hover {
+transform: skew(-20deg);
+color: #800000;
+}
+#timer-div{
+	color: #800000;
+	font-weight: bolder;
+	font-size: 20px;
 }

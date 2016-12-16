@@ -83,7 +83,7 @@ var TriviaGame = {
 			TriviaGame.doTimeOut();
 		}
 		//display the timer
-		$("#timer-div").html("Time remaining is " + TriviaGame.timeCnt);
+		$("#timer-div").html("Time remaining is " + TriviaGame.timeCnt + " seconds.");
 	},
 
 	nextQuestion: function(){
@@ -138,7 +138,7 @@ var TriviaGame = {
 		for(k=0; k<opt.length; k++){
 			var optButton = $("<button/>", {	
 			'text': opt[k],
-			'class': '.options',
+			'class': 'options',
 			'data-ind': num,
 			'value' : opt[k]
 			});
